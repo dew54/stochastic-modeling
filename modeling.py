@@ -2,9 +2,11 @@ import numpy as np
 import random as rm
 import math
 import pandas as pd
+
 from matplotlib import pyplot as plt
-from getStats import getStats
 from statsmodels.distributions.empirical_distribution import ECDF
+
+from getStats import getStats
 
 
 def weatherGame(T):
@@ -107,18 +109,14 @@ def computeNonPrecip(t, isWet):
     
 
 def earthQwakeGame():
-    a = -100
+    a = -0.9999999
     b = 1
-
 
     for m in range(0, 1300):
         print(m)
         print(10 **((a-b)*(m/100)))
         y.append(10 **((a-b)*(m/100)))
     EQ_cdf = ECDF(y)
-
-    # print(EQ_cdf.y)
-    print(y)
 
     for i in range(0, T):
         EQ_samples.append(sampleGivenCDF(EQ_cdf.y)/100)

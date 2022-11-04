@@ -1,16 +1,34 @@
 import pandas as pd
+import numpy as np
+from statsmodels.distributions.empirical_distribution import ECDF
 
 
-df = pd.read_csv('tarvisio-2021.csv')
-daily_df = pd.read_csv('orari-Tarvisio-2021.csv')
-daily_df.fillna(0)
-df_wet = (df[df['rain'] > 0] ) 
-df_dry = (df[df['rain'] == 0] ) 
-for m in range(1, 13):
-    mese = daily_df[daily_df['mese'] == m]
-    print(int(mese['index'].size/24))
-    for g in range(int(mese['index'].size/24)):
-        print(mese[mese['giorno'] == g]['radiaz'].mean() )
-        
+def sampleGivenCDF(y):
+    u = np.random.uniform()
+    print(u)
+    if u < y[1]:
+        return 1
+    else :    
+        for idx in range(y.size):
+            if(y[idx] < u and y [idx+1] > u):
+                return idx
 
-    
+
+
+T = 365
+EQ_samples = []
+
+a = -0.9999999
+b = 1
+y = []
+for m in range(0, 1300):
+    print(m)
+    print(10 **((a-b)*(m/100)))
+    y.append(10 **((a-b)*(m/100)))
+EQ_cdf = ECDF(y)
+
+for i in range(0, T):
+    EQ_samples.append(sampleGivenCDF(EQ_cdf.y)/100)
+
+
+# print(EQ_samples)
