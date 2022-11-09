@@ -123,6 +123,8 @@ class Weather:
             X.append(i)
 
         self.rainyDays = dailyRain
+        self.t_min = t_min
+        self.t_max = t_max
         return dailyRain, t_min, t_max, radiaz, probs
 
 
@@ -155,6 +157,47 @@ class Weather:
 
         return tmin, tmax, rad, excursion
                 
+    def getRainProbability(self, t, rainAmount):
+        mu = self.mu[t]
+        probability = 1- (1/mu)* math.exp(rainAmount/mu)
+        return probability
+    
+    def getTemperatureProbability(self, t,  t_min, t_max):
+        weekTmin = np.mean(self.t_min[t-5:t+5])
+        weekTmax = np.mean(self.t_max[t-5:t+5])
+        tminProb = []
+        tmaxProb = []
+        
+
+        x = [t for t in range(-10, 30)]
+
+        for ics in x:
+            countm = 0
+            countM = 0
+            for tmin in self.t_min[t-3:t+3]:
+                if ics >= tmin -1 and ics <= tmin + 1:
+                    countm += 1
+
+            for tmax in self.t_max[t-3:t+3]:
+                if ics >= tmax -1 and ics <= tmax + 1:
+                    countM += 1
+                
+            tminProb.append(countm)
+            tmaxProb.append(countM)
+            probMin = Utils.smooth(tminProb, 5)
+            probMax = Utils.smooth(tmaxProb, 5)
+
+            probMax = [pm/np.sum(probMax) for pm in probMax]
+            probMin = [pm/np.sum(probMin) for pm in probMin]
+            
+        return x, probMin, probMax 
 
 
+
+        
+        
+
+        
+    def sampleRain(self, t):
+        return self.rainyDays[t], self.getRainProbability(t, self.rainyDays[t])
         

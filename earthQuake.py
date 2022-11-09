@@ -1,14 +1,14 @@
 from utils import Utils
 
 class EarthQuake:
-  def __init__(self, a, b):
-    p = []
-    for m in range(0, 14):
-        
-        N = 10 **((a-b*(m)))
-        p.append(N)
+    def __init__(self, a, b):
+        p = []
+        for m in range(0, 14):
+            
+            N = 10 **((a-b*(m)))
+            p.append(N)
 
-    self.probVector = ([ i/sum(yps for yps in p) for i in p])
+        self.probVector = ([ i/sum(yps for yps in p) for i in p])
 
     def getProb(self, magnitude):
         if magnitude >= 14:
