@@ -1,9 +1,11 @@
 import random
+import pandas as pd
 from utils import Utils
 from weather import Weather
 from flood import Flood
 from earthQuake import EarthQuake
 from population import Population
+from flood import Flood
 import math
 
 class Scenario:
@@ -12,28 +14,68 @@ class Scenario:
         self.weather = Weather(T)
         self.pop = Population(totPop, T)
         self.eq = EarthQuake(3, 0.8)
+        self.flood = Flood(T/365)   # number of years
         self.dailyRain, self.t_min, self.t_max, self.radiaz, self.probs = self.weather.weatherGame()
         self.probability = 0
         self.rainAmount = []
         self.population = []
         self.earthqwake = []
-        self.flood = []
         self.t_min = []
         self.t_max = []
         self.radiaz = []
         self.T = T
+        
+
+
+
 
 
     def sampleScenario(self):
+
+        self.disaster = {
+            1: "earthqwake",
+            2: "flood"
+        }
+
+        disasterType = random.randint(1, 2)
         self.timeIstant = random.randint(0, self.T)
+
+        # self.tempMin = self.t_min[self.timeIstant]
+        # self.tempMax = self.t_max[self.timeIstant]
+        # self.radiation = self.radiaz[self.timeIstant]
+        
         self.rainAmount = [self.weather.sampleRain(self.timeIstant)]
         self.population = [self.pop.samplePopulation(self.timeIstant)]        
-        self.earthqwake = [self.eq.sampleEQ(5)]
+        if disasterType == 1:
+            self.earthqwake = [self.eq.sampleEQ(5)]
+            self.floodings = 0
+        elif disasterType == 2:
+            self.floodings = [self.flood.getProb()]
+            self.earthqwake = 0
+        
 
-        print(self.timeIstant)
-        print(self.rainAmount)
-        print(self.population)
-        print(self.earthqwake)
+        
+
+        # print(self.timeIstant)
+        # print(self.rainAmount)
+        # print(self.population)
+        # print(self.earthqwake)
+        # print(self.floodings)
+
+        return self
+
+
+
+    def getRow(self):
+        row = [self.timeIstant, self.population, self.rainAmount, self.]
+
+
+
+
+
+
+
+
 
     def populate(self, numScenarios, evaAreas, evaDemand):
         self.night = int(1/(random.randint(1,5)))

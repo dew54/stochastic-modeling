@@ -17,7 +17,8 @@ from scenario import Scenario
 
 if __name__ == "__main__":
 
-    T = 365*10
+    numScenarios = 20
+    T = 365 * 10
     totPop = 1000
     weather = Weather(T)
     dailyRain, t_min, t_max, radiaz, probs = weather.weatherGame()
@@ -25,11 +26,44 @@ if __name__ == "__main__":
     population.getProbability(5000)
 
     scenario = Scenario(totPop, T)
-    scenario.sampleScenario()
+    scenarios = []
+    tIstants = []
+    badDays = []
+    for ns in range(numScenarios):
+        s = scenario.sampleScenario()
+        scenarios.append(s)
+        tIstants.append(s.timeIstant)
+        print(s.timeIstant)
+    print(tIstants)
 
-    # ics, tmin, tmax = weather.getTemperatureProbability(300, 10, 20)
-
+    # # ics, tmin, tmax = weather.getTemperatureProbability(300, 10, 20)
+    # tIstants = [0, 1, 2]
     X = range(0, T)
+    # for x in X:
+    #     for t in tIstants:
+    #         if t == x:
+    #             badDays.append(1)
+    #         else:
+    #             badDays.append(0)
+                
+    badDays = np.isin(X, tIstants)
+    # print(badDays)
+
+
+
+    df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
+    
+    df['idx'] = [x for x in range(len(tIstants))]
+    df['day'] = tIstants
+    for s in scenarios:
+        
+
+
+
+    df['population'].append(s.population)
+    df['rainAmount'].append(s.rainAmount)
+        # df['t_min'] = self.tem
+
 
 
     fig1, axs1 = plt.subplots(3, 2)
@@ -48,7 +82,7 @@ if __name__ == "__main__":
     axs1[1][1].plot(X,  radiaz )
     axs1[1][1].set_title('radiation')
 
-    # axs1[2][0].plot(ics, tmin, tmax)
-    # axs1[2][0]
+    axs1[2][0].plot(X, badDays)
+    axs1[2][0]
 
     plt.show()
