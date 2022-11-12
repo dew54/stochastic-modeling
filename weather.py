@@ -152,8 +152,8 @@ class Weather:
             excursion = tmax - tmin
             self.zed = Utils.computeAR1(self.zed, self.A, self.B)
                         
-        if excursion < 0:
-            print("EXCURSION IS NEGATIVEEEE")
+        # if excursion < 0:
+        #     print("EXCURSION IS NEGATIVEEEE")
 
         return tmin, tmax, rad, excursion
                 

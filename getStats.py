@@ -42,8 +42,5 @@ def getStats():
         "min_rad"       : df['radiaz'].min()
         
     }
-    print(df_dry['t_max'].mean(), "||", df_dry['t_min'].mean())
-    # print(df_wet['t_max'].std(), "||", df_dry['t_max'].std())
-    print(df_wet['radiaz'].mean(), "||", df_dry['radiaz'].mean())
-    print(df_wet['radiaz'].std(), "||", df_dry['radiaz'].std())
+    
     return desc, df

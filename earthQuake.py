@@ -1,5 +1,5 @@
 from utils import Utils
-
+import random
 class EarthQuake:
     def __init__(self, a, b):
         p = []
@@ -14,14 +14,13 @@ class EarthQuake:
         if magnitude >= 14:
             return 0
         else:
-            return(self.probVector[magnitude])
+            return( self.probVector[magnitude])
 
 
     def sampleEQ(self, minMag):
-        magnitude = 0
-        while magnitude < minMag:
-            magnitude = Utils.discrete_inverse_trans(self.probVector)
         
-        prob = self.getProb(magnitude)
-        return magnitude, prob
+        magnitude = random.sample(range(minMag, 13), k=1)
+        
+        prob = self.getProb(magnitude[0])
+        return magnitude[0], prob
         
