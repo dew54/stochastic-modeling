@@ -10,13 +10,12 @@ import random
 
 
 
-x = [2, 0]
-y = [0, 1,2]
-a = np.isin(y,x)
+df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
+
+df['population'] = [1,2]
 
 
-
-print()
+print(df)
 
 # plt.plot(probVector)
 # plt.show()

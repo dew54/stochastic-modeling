@@ -16,13 +16,13 @@ class Scenario:
         self.eq = EarthQuake(3, 0.8)
         self.flood = Flood(T/365)   # number of years
         self.dailyRain, self.t_min, self.t_max, self.radiaz, self.probs = self.weather.weatherGame()
-        self.probability = 0
+        # self.probability = 0
         self.rainAmount = []
         self.population = []
         self.earthqwake = []
-        self.t_min = []
-        self.t_max = []
-        self.radiaz = []
+        # self.t_min = []
+        # self.t_max = []
+        # self.radiaz = []
         self.T = T
         
 
@@ -39,19 +39,19 @@ class Scenario:
 
         disasterType = random.randint(1, 2)
         self.timeIstant = random.randint(0, self.T)
-
-        # self.tempMin = self.t_min[self.timeIstant]
-        # self.tempMax = self.t_max[self.timeIstant]
-        # self.radiation = self.radiaz[self.timeIstant]
+        # print(self.t_min)
+        self.tempMin = self.t_min[self.timeIstant]
+        self.tempMax = self.t_max[self.timeIstant]
+        self.radiation = self.radiaz[self.timeIstant]
         
         self.rainAmount = [self.weather.sampleRain(self.timeIstant)]
         self.population = [self.pop.samplePopulation(self.timeIstant)]        
         if disasterType == 1:
             self.earthqwake = [self.eq.sampleEQ(5)]
-            self.floodings = 0
+            self.flooding = [0, 0]
         elif disasterType == 2:
-            self.floodings = [self.flood.getProb()]
-            self.earthqwake = 0
+            self.flooding = [self.flood.getProb()]
+            self.earthqwake = [0, 0]
         
 
         
@@ -66,8 +66,8 @@ class Scenario:
 
 
 
-    def getRow(self):
-        row = [self.timeIstant, self.population, self.rainAmount, self.]
+    # def getRow(self):
+    #     row = [self.timeIstant, self.population, self.rainAmount, self.]
 
 
 

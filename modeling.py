@@ -15,8 +15,8 @@ from scenario import Scenario
 
 
 
-if __name__ == "__main__":
-
+# if __name__ == "__main__":
+def runSym():
     numScenarios = 20
     T = 365 * 10
     totPop = 1000
@@ -55,15 +55,17 @@ if __name__ == "__main__":
     
     df['idx'] = [x for x in range(len(tIstants))]
     df['day'] = tIstants
-    for s in scenarios:
+    # for s in scenarios:
         
+    df['population'] = [s.population[0][0] for s in scenarios]
+    df['rainAmount'] = [s.rainAmount[0] for s in scenarios]
+    df['t_min'] = [s.tempMin for s in scenarios]
+    df['t_max'] = [s.tempMax for s in scenarios]
+    df['radiation'] = [s.radiation for s in scenarios]
+    df['flood'] = [s.flooding[0] for s in scenarios]
+    df['earthqwake'] = [s.earthqwake[0] for s in scenarios]
 
-
-
-    df['population'].append(s.population)
-    df['rainAmount'].append(s.rainAmount)
-        # df['t_min'] = self.tem
-
+    print(df) 
 
 
     fig1, axs1 = plt.subplots(3, 2)
@@ -85,4 +87,5 @@ if __name__ == "__main__":
     axs1[2][0].plot(X, badDays)
     axs1[2][0]
 
-    plt.show()
+    # plt.show()
+    return df
