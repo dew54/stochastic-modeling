@@ -12,10 +12,10 @@ from flood import Flood
 from population import Population
 from weather import Weather
 from scenario import Scenario
+from utils import Utils
 
 
 
-# if __name__ == "__main__":
 def runSym():
     numScenarios = 20
     T = 365 * 10
@@ -25,15 +25,17 @@ def runSym():
     population = Population(totPop, T)
     population.getProbability(5000)
 
-    scenario = Scenario(totPop, T)
+    
     scenarios = []
     tIstants = []
     badDays = []
     for ns in range(numScenarios):
+        scenario = Scenario(totPop, T)
         s = scenario.sampleScenario()
         scenarios.append(s)
         tIstants.append(s.timeIstant)
         print(s.timeIstant)
+        print(s.population)
     print(tIstants)
 
     # # ics, tmin, tmax = weather.getTemperatureProbability(300, 10, 20)
@@ -51,21 +53,23 @@ def runSym():
 
 
 
-    df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
+    df = pd.DataFrame(columns=['day', 'population', 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake', 'probability', 'normalized'])
     
-    df['idx'] = [x for x in range(len(tIstants))]
+    # df['idx'] = [x for x in range(len(tIstants))]
     df['day'] = tIstants
     # for s in scenarios:
         
-    df['population'] = [s.population[0][0] for s in scenarios]
-    df['rainAmount'] = [s.rainAmount[0] for s in scenarios]
-    df['t_min'] = [s.tempMin for s in scenarios]
-    df['t_max'] = [s.tempMax for s in scenarios]
-    df['radiation'] = [s.radiation for s in scenarios]
+    df['population'] = [int(s.population) for s in scenarios]
+    df['rainAmount'] = [int(s.rainAmount) for s in scenarios]
+    df['t_min'] = [int(s.tempMin) for s in scenarios]
+    df['t_max'] = [int(s.tempMax) for s in scenarios]
+    df['radiation'] = [int(s.radiation) for s in scenarios]
     df['flood'] = [s.flooding[0] for s in scenarios]
-    df['earthqwake'] = [s.earthqwake[0] for s in scenarios]
+    df['earthqwake'] =  [s.earthqwake[0] for s in scenarios]
+    df['probability'] = [s.probability for s in scenarios]
+    df['normalized'] = Utils.normalizeProbs([s.probability for s in scenarios])
 
-    print(df) 
+    
 
 
     fig1, axs1 = plt.subplots(3, 2)
@@ -84,8 +88,12 @@ def runSym():
     axs1[1][1].plot(X,  radiaz )
     axs1[1][1].set_title('radiation')
 
-    axs1[2][0].plot(X, badDays)
+    axs1[2][0].plot([x for x in range(len(tIstants))], Utils.normalizeProbs([s.probability for s in scenarios]))
     axs1[2][0]
 
     # plt.show()
     return df
+
+
+if __name__ == "__main__":
+    runSym()

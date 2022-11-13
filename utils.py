@@ -27,4 +27,9 @@ class Utils:
         y_smooth = np.convolve(y, box, mode="same")
         return y_smooth
 
+
+    def normalizeProbs(probs):
+        total = sum(probs)
+        normalized = [p/total for p in probs]
+        return normalized
     

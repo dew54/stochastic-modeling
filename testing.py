@@ -7,15 +7,13 @@ from matplotlib import pyplot as plt
 from getStats import getStats
 from statsmodels.distributions.empirical_distribution import ECDF
 import random
+from utils import Utils
 
 
 
-df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
+# df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
 
-df['population'] = [1,2]
+# df['population'] = [1,2]
 
-
-print(df)
-
-# plt.plot(probVector)
-# plt.show()
+vector = (1, 5, 10)
+print(Utils.normalizeProbs(vector))

@@ -10,6 +10,7 @@ import math
 
 class Scenario:
     def __init__(self, totPop,  T ):
+        
         self.timeIstant = 0
         self.weather = Weather(T)
         self.pop = Population(totPop, T)
@@ -44,14 +45,17 @@ class Scenario:
         self.tempMax = self.t_max[self.timeIstant]
         self.radiation = self.radiaz[self.timeIstant]
         
-        self.rainAmount = [self.weather.sampleRain(self.timeIstant)]
-        self.population = [self.pop.samplePopulation(self.timeIstant)]        
+        self.rainAmount, rainProb = self.weather.sampleRain(self.timeIstant)
+        self.population, popProb = self.pop.samplePopulation(self.timeIstant)     
         if disasterType == 1:
-            self.earthqwake = [self.eq.sampleEQ(5)]
-            self.flooding = [0, 0]
+            self.earthqwake = self.eq.sampleEQ(5)
+            self.flooding = (0, 0)
+            disProb = self.earthqwake[1]
         elif disasterType == 2:
-            self.flooding = [self.flood.getProb()]
-            self.earthqwake = [0, 0]
+            self.flooding = self.flood.getProb()
+            self.earthqwake = (0, 0)
+            disProb = self.flooding[1]
+        self.probability = abs(rainProb * popProb * disProb)
         
 
         
