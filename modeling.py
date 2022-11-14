@@ -23,12 +23,11 @@ def runSym():
     weather = Weather(T)
     dailyRain, t_min, t_max, radiaz, probs = weather.weatherGame()
     population = Population(totPop, T)
-    population.getProbability(5000)
+    # population.getProbability(5000)
 
     
     scenarios = []
     tIstants = []
-    badDays = []
     for ns in range(numScenarios):
         scenario = Scenario(totPop, T)
         s = scenario.sampleScenario()

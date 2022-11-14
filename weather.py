@@ -2,6 +2,7 @@ import numpy as np
 import math
 from getStats import getStats
 from utils import Utils
+import random
 
 class Weather:
     def __init__(self, T):
@@ -156,41 +157,57 @@ class Weather:
         #     print("EXCURSION IS NEGATIVEEEE")
 
         return tmin, tmax, rad, excursion
+
+
+    def extractDescriptors(self, t):
+        period = 20        
+        oneWeek = []
+        oneWtmin = []
+        oneWtmax = []
+        pc = random.sample([self.p11, self.p01], 1)[0]
+        for p in range(period):
+            for i in range(7):
+                u = np.random.uniform()
+                if u <= pc:
+                    rainAmount = np.random.exponential(scale=self.mu[t-i], size=None)
+                    pc = self.p11
+                    tmin, tmax, rad, excursion = self.computeNonPrecip(t-i, 1)
+                    oneWeek.append(rainAmount)
+                    oneWtmin.append(tmin)
+                    oneWtmax.append(tmax)
+
+                else:
+                    pc = self.p01
+                    oneWeek.append(0)                                 # Non è un giorno di pioggia -> 0 precipitazioni
+                    tmin, tmax, rad, excursion = self.computeNonPrecip(t-i, 0)
+                    oneWtmin.append(tmin)
+                    oneWtmax.append(tmax)
+                    # oneWeek.append(rainAmount)
+        mean = np.mean(oneWeek)
+        std = np.std(oneWeek)
+        tminMean = np.mean(oneWtmin)
+        tminStd = np.std(oneWtmin)
+        tmaxMean = np.mean(oneWtmax)
+        tmaxStd = np.std(oneWtmax)
+        return mean, std, tminMean, tminStd, tmaxMean, tmaxStd
+
                 
     def getRainProbability(self, t, rainAmount):
-        mu = self.mu[t]
-        probability = 1- (1/mu)* math.exp(rainAmount/mu)
-        return probability
+        mean, std, a, b, c, d = self.extractDescriptors(t)
+        prb = Utils.cebychevDis(rainAmount, mean, std)
+        return prb
     
-    def getTemperatureProbability(self, t,  t_min, t_max):
-        weekTmin = np.mean(self.t_min[t-5:t+5])
-        weekTmax = np.mean(self.t_max[t-5:t+5])
-        tminProb = []
-        tmaxProb = []
+    def getTProbability(self, t, tmin):
+        a, b, mean, std, Mean, Std = self.extractDescriptors(t)
+        prb = Utils.cebychevDis(tmin, mean, std)
+        Prb = Utils.cebychevDis(tmin, Mean, Std)
+        return prb, Prb
+
+    
+
         
+    
 
-        x = [t for t in range(-10, 30)]
-
-        for ics in x:
-            countm = 0
-            countM = 0
-            for tmin in self.t_min[t-3:t+3]:
-                if ics >= tmin -1 and ics <= tmin + 1:
-                    countm += 1
-
-            for tmax in self.t_max[t-3:t+3]:
-                if ics >= tmax -1 and ics <= tmax + 1:
-                    countM += 1
-                
-            tminProb.append(countm)
-            tmaxProb.append(countM)
-            probMin = Utils.smooth(tminProb, 5)
-            probMax = Utils.smooth(tmaxProb, 5)
-
-            probMax = [pm/np.sum(probMax) for pm in probMax]
-            probMin = [pm/np.sum(probMin) for pm in probMin]
-            
-        return x, probMin, probMax 
 
 
 

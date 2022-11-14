@@ -55,9 +55,9 @@ class Scenario:
             self.flooding = self.flood.getProb()
             self.earthqwake = (0, 0)
             disProb = self.flooding[1]
-        self.probability = abs(rainProb * popProb * disProb)
-        
-
+        rainProb = self.weather.getRainProbability(self.timeIstant, self.rainAmount)
+        tminProb, tmaxProb = self.weather.getTProbability(self.timeIstant, self.tempMin)
+        self.probability = rainProb * popProb * disProb * tminProb * tmaxProb
         
 
         # print(self.timeIstant)
