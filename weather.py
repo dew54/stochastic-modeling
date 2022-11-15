@@ -3,6 +3,7 @@ import math
 from getStats import getStats
 from utils import Utils
 import random
+import pandas as pd
 
 class Weather:
     def __init__(self, T):
@@ -13,6 +14,7 @@ class Weather:
         p10 = 1 - self.p11  
         self.rainyDays = []
         self.processParams(T)
+
 
         self.zed =np.array([0, 0, 0])
 
@@ -25,34 +27,34 @@ class Weather:
 
         stats, df = getStats()
 
-        E_tmin0 = 2#stats['E_tmin_0']
-        E_tmax0 = 15#stats['E_tmax_0']
+        E_tmin0 = stats['E_tmin_0']
+        E_tmax0 = stats['E_tmax_0']
         E_r0 = stats['E_r_0']
 
-        self.S_tmin0 = 7#stats['VAR_tmin_0']
-        self.S_tmax0 = 5#stats['VAR_tmax_0']
+        self.S_tmin0 = stats['VAR_tmin_0']
+        self.S_tmax0 = stats['VAR_tmax_0']
         self.S_r0 = stats['VAR_r_0']
 
         #Override
         # S_r0 = S_r0/10
 
-        E_tmin1 = 0#stats['E_tmin_1']
-        E_tmax1 = 12#stats['E_tmax_1']
+        E_tmin1 = stats['E_tmin_1']
+        E_tmax1 = stats['E_tmax_1']
         E_r1 = stats['E_r_1']
 
-        self.S_tmin1 = 6#stats['VAR_tmin_1']
-        self.S_tmax1 = 5#stats['VAR_tmax_1']
+        self.S_tmin1 = stats['VAR_tmin_1']
+        self.S_tmax1 = stats['VAR_tmax_1']
         self.S_r1 = stats['VAR_r_1']
         # S_r1 = S_r1/10
 
         initialValue = np.array([0, 0, 0])
 
-        C_r0 = -20000
-        C_r1 = -900
-        C_tmin0 = -5
-        C_tmax0 = -6
-        C_tmin1 = -3
-        C_tmax1 = -4
+        C_r0 = stats['C_r0']  #-20000
+        C_r1 = stats['C_r1'] # -900
+        C_tmin0 = stats['C_tmin0'] #-5
+        C_tmax0 = stats['C_tmax0'] #-6
+        C_tmin1 = stats['C_tmin1'] #-3
+        C_tmax1 = stats['C_tmax1'] #-4
         self.wave_tmin0 = []
         self.wave_tmax0 = []
         self.wave_r0 = []
@@ -126,7 +128,8 @@ class Weather:
         self.rainyDays = dailyRain
         self.t_min = t_min
         self.t_max = t_max
-        return dailyRain, t_min, t_max, radiaz, probs
+        self.weatherData =  dailyRain, t_min, t_max, radiaz
+        return dailyRain, t_min, t_max, radiaz
 
 
     def computeNonPrecip(self, t, isWet):
@@ -202,6 +205,30 @@ class Weather:
         prb = Utils.cebychevDis(tmin, mean, std)
         Prb = Utils.cebychevDis(tmin, Mean, Std)
         return prb, Prb
+    
+    def setMostRainyWeeks(self, rainyDays, ns):
+        mostRainy = []
+        timeIstant = []
+        for t in range(self.T):
+            mostRainy.append(sum(rainyDays[t:t+7]))
+        mr = pd.Series(mostRainy)
+        i = mr.nlargest(ns)
+        # mostRainy.sort(reverse = True)
+
+        # print(i)
+        self.rainyWeeks =  (i.index.array)
+
+
+    def sampleFromRainyWeeks(self):
+        rainyWeeks = np.array(self.rainyWeeks)
+        index = random.sample(range(len(rainyWeeks)), 1)[0]
+        sample = rainyWeeks[index]
+        a = [1]#list(rainyWeeks[0:index-1])
+        b = [2]#list(rainyWeeks[index+1:-1])
+        self.rainyWeeks = np.concatenate((a, b))
+        # self.rainyWeeks.delete(index)
+        # self.rainyWeeks  = a.concatenate(b)
+        return sample
 
     
 

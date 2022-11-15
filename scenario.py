@@ -7,24 +7,28 @@ from earthQuake import EarthQuake
 from population import Population
 from flood import Flood
 import math
+import numpy as np 
 
 class Scenario:
-    def __init__(self, totPop,  T ):
+    def __init__(self, pop , weather, numScenarios, t):
         
-        self.timeIstant = 0
-        self.weather = Weather(T)
-        self.pop = Population(totPop, T)
+        self.timeIstant = t
+        self.T = pop.T
+        self.ns = numScenarios
+        self.weather = weather
+        self.pop = pop
         self.eq = EarthQuake(3, 0.8)
-        self.flood = Flood(T/365)   # number of years
-        self.dailyRain, self.t_min, self.t_max, self.radiaz, self.probs = self.weather.weatherGame()
+        self.weather = Weather(self.T)
+        self.flood = Flood(self.T/365)   # number of years
+        self.dailyRain, self.t_min, self.t_max, self.radiaz = weather.weatherData
         # self.probability = 0
         self.rainAmount = []
         self.population = []
         self.earthqwake = []
+        self.weather.setMostRainyWeeks(self.dailyRain, self.ns) 
         # self.t_min = []
         # self.t_max = []
         # self.radiaz = []
-        self.T = T
         
 
 
@@ -39,25 +43,37 @@ class Scenario:
         }
 
         disasterType = random.randint(1, 2)
-        self.timeIstant = random.randint(0, self.T)
-        # print(self.t_min)
-        self.tempMin = self.t_min[self.timeIstant]
-        self.tempMax = self.t_max[self.timeIstant]
-        self.radiation = self.radiaz[self.timeIstant]
         
-        self.rainAmount, rainProb = self.weather.sampleRain(self.timeIstant)
-        self.population, popProb = self.pop.samplePopulation(self.timeIstant)     
+        
+        
+          
         if disasterType == 1:
+            self.EQtimeIstant = self.timeIstant#random.randint(0, self.T)
+            # print(self.t_min)
+            self.tempMin = self.t_min[self.EQtimeIstant]
+            self.tempMax = self.t_max[self.EQtimeIstant]
+            self.radiation = self.radiaz[self.EQtimeIstant]
             self.earthqwake = self.eq.sampleEQ(5)
             self.flooding = (0, 0)
             disProb = self.earthqwake[1]
+            self.timeIstant = self.EQtimeIstant
         elif disasterType == 2:
+            self.FLtimeIstant = self.timeIstant#self.weather.sampleFromRainyWeeks()
+            self.tempMin = self.t_min[self.FLtimeIstant]
+            self.tempMax = self.t_max[self.FLtimeIstant]
+            self.radiation = self.radiaz[self.FLtimeIstant]
             self.flooding = self.flood.getProb()
             self.earthqwake = (0, 0)
             disProb = self.flooding[1]
+            self.timeIstant = self.FLtimeIstant
+
+        self.rainAmount, rainProb = self.dailyRain[self.timeIstant], self.weather.getRainProbability(self.timeIstant,self.dailyRain[self.timeIstant] )
+        self.population, popProb = self.pop.samplePopulation(self.timeIstant)  
+
         rainProb = self.weather.getRainProbability(self.timeIstant, self.rainAmount)
         tminProb, tmaxProb = self.weather.getTProbability(self.timeIstant, self.tempMin)
         self.probability = rainProb * popProb * disProb * tminProb * tmaxProb
+        print("Probabilities: ", rainProb, popProb, disProb, tminProb, tmaxProb)
         
 
         # print(self.timeIstant)
@@ -72,12 +88,6 @@ class Scenario:
 
     # def getRow(self):
     #     row = [self.timeIstant, self.population, self.rainAmount, self.]
-
-
-
-
-
-
 
 
 

@@ -48,7 +48,6 @@ class Population:
         mean, std = self.extractDescriptors(t)
         
         prb = Utils.cebychevDis(sample, mean, std)
-        print('probability: ', prb)
 
         return prb
     

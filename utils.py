@@ -36,8 +36,6 @@ class Utils:
     
     def cebychevDis(sample, mean, std):
         lmbda = abs(sample - mean)
-        # lmbda = lmbda if lmbda > 1 else 1
-        print("lambda is: ", lmbda)
 
         return  (std**2)/(std**2 + lmbda)       # disuguaglianza di Cantelli
     

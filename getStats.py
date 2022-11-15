@@ -1,5 +1,5 @@
 import pandas as pd
-
+import json
 def getStats():
 
 
@@ -14,33 +14,42 @@ def getStats():
 
 
 
-    desc = {
-        "E_tmin_0" : df_dry['t_min'].mean(),           # no rain stats
-        "E_tave_0" : df_dry['t_ave'].mean(),
-        "E_tmax_0" : df_dry['t_max'].mean(),
-        "E_r_0"    : df_dry['radiaz'].mean(),
-        "VAR_tmin_0" : df_dry['t_min'].std(),
-        "VAR_tave_0" : df_dry['t_ave'].std(),
-        "VAR_tmax_0" : df_dry['t_max'].std(),
-        "VAR_r_0"    : df_dry['radiaz'].std(),
+    desc = {                                        # no rain stats
+        "E_tmin_0" : int(df_dry['t_min'].mean()),        # means
+        "E_tave_0" : int(df_dry['t_ave'].mean()),
+        "E_tmax_0" : int(df_dry['t_max'].mean()),
+        "E_r_0"    : int(df_dry['radiaz'].mean()),
+        "VAR_tmin_0" : int(df_dry['t_min'].std()),       #STDs
+        "VAR_tave_0" : int(df_dry['t_ave'].std()),
+        "VAR_tmax_0" : int(df_dry['t_max'].std()),
+        "VAR_r_0"    : int(df_dry['radiaz'].std()),
+                                                    # Rain stats
+        "E_tmin_1" : int(df_wet['t_min'].mean()),           
+        "E_tave_1" : int(df_wet['t_ave'].mean()),
+        "E_tmax_1" : int(df_wet['t_max'].mean()),
+        "E_r_1"    : int(df_wet['radiaz'].mean()),
+        "VAR_tmin_1" : int(df_wet['t_min'].std()),
+        "VAR_tave_1" : int(df_wet['t_ave'].std()),
+        "VAR_tmax_1" : int(df_wet['t_max'].std()),
+        "VAR_r_1"    : int(df_wet['radiaz'].std()),
 
-        "E_tmin_1" : df_wet['t_min'].mean(),           # Rain stats
-        "E_tave_1" : df_wet['t_ave'].mean(),
-        "E_tmax_1" : df_wet['t_max'].mean(),
-        "E_r_1"    : df_wet['radiaz'].mean(),
+        "E_rain"     : int(df_wet['rain'].mean()),
+        "VAR_rain"     : int(df_wet['rain'].std()),
 
-        "VAR_tmin_1" : df_wet['t_min'].std(),
-        "VAR_tave_1" : df_wet['t_ave'].std(),
-        "VAR_tmax_1" : df_wet['t_max'].std(),
-        "VAR_r_1"    : df_wet['radiaz'].std(),
+        "min_rad_wet"   : int(df_wet['radiaz'].min()),
+        'min_rad_dry'   : int(df_dry['radiaz'].min()),
+        "min_rad"       : int(df['radiaz'].min()),
 
-        "E_rain"     : df_wet['rain'].mean(),
-        "VAR_rain"     : df_wet['rain'].std(),
-
-        "min_rad_wet"   : df_wet['radiaz'].min(),
-        'min_rad_dry'   : df_dry['radiaz'].min(),
-        "min_rad"       : df['radiaz'].min()
+        "C_r0"          : -2000,
+        "C_r1"          : -900,
+        "C_tmin0"       : -5,
+        "C_tmax0"       : -6,
+        "C_tmin1"       : -3,
+        "C_tmax1"       : -4
         
     }
+    
+    with open('stats.txt', 'w') as convert_file:
+        convert_file.write(json.dumps(desc))
     
     return desc, df
