@@ -8,10 +8,10 @@ import pandas as pd
 class Weather:
     def __init__(self, T):
         self.T = T
-        self.p01 = 0.4 # wet day after dry day
-        self.p00 = 1 - self.p01 # (dry day following a dry day
-        self.p11 = 0.6 # wet day after a wet day  
-        p10 = 1 - self.p11  
+        # self.p01 = 0.4 # wet day after dry day
+        # self.p00 = 1 - self.p01 # (dry day following a dry day
+        # self.p11 = 0.6 # wet day after a wet day  
+        # p10 = 1 - self.p11  
         self.rainyDays = []
         self.processParams(T)
 
@@ -26,6 +26,11 @@ class Weather:
         self.B = np.array([[0.718, 0, 0], [0.328, 0.637, 0], [0.238, -0.314, 0.873]])
 
         stats, df = getStats()
+
+        self.p01 = stats['p01']
+        self.p00 = 1 - self.p01
+        self.p11 = stats['p11']
+        self.p10 = 1 - self.p11
 
         E_tmin0 = stats['E_tmin_0']
         E_tmax0 = stats['E_tmax_0']

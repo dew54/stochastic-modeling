@@ -1,5 +1,7 @@
 import pandas as pd
-import json
+from sympy import symbols, Eq, solve
+import numpy as np
+# import json
 def getStats():
 
 
@@ -7,11 +9,27 @@ def getStats():
     # daily_df = pd.read_csv('orari-Tarvisio-2021.csv')
     df_wet = (df[df['rain'] > 0] ) 
     df_dry = (df[df['rain'] == 0] ) 
+
+
     # for mese in range(1, 13):
     #     for giorno in daily_df[daily_df['mese'] == mese]
 
     #     daily_df[daily_df['mese'] == mese]
 
+    E = np.array([df['rain'] > 0 ]).mean()
+    Var = np.array([df['rain'] > 0 ]).var()
+    T = len(df['rain'])
+    pi = E/T
+    g = Var/(E - E**2)
+    r1 = (g*T - 1)/(g*T +1)
+    p01, p11 = symbols('p01 p11')
+
+    eq1 = Eq(((p01)/(1 + p01 - p11)), pi)
+    eq2 = Eq(r1 ,  p11 - p01)
+
+    sol = solve((eq1,eq2), (p01, p11))
+
+    print(sol)
 
 
     desc = {                                        # no rain stats
@@ -45,11 +63,14 @@ def getStats():
         "C_tmin0"       : -5,
         "C_tmax0"       : -6,
         "C_tmin1"       : -3,
-        "C_tmax1"       : -4
+        "C_tmax1"       : -4,
+
+        "p01"           : 0.25,#sol[p01],
+        "p11"           : 0.8#sol[p11]
         
     }
     
-    with open('stats.txt', 'w') as convert_file:
-        convert_file.write(json.dumps(desc))
+    # with open('stats.txt', 'w') as convert_file:
+    #     convert_file.write(json.dumps(desc))
     
     return desc, df
