@@ -9,11 +9,8 @@ from statsmodels.distributions.empirical_distribution import ECDF
 import random
 from utils import Utils
 
-
-
-# df = pd.DataFrame(columns=['idx', 'day', 'population' 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake'])
-
-# df['population'] = [1,2]
-
-vector = (1, 5, 10)
-print(Utils.normalizeProbs(vector))
+import json
+  
+a = [1, 2, 3]
+b = a[]
+print(b)
