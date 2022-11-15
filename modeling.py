@@ -13,6 +13,7 @@ from population import Population
 from weather import Weather
 from scenario import Scenario
 from utils import Utils
+import random
 
 
 
@@ -24,15 +25,29 @@ def runSym():
     weatherData = weather.weatherGame()
     dailyRain, t_min, t_max, radiaz = weatherData
     population = Population(totPop, T)
+    mostRainyWeeks = weather.setMostRainyWeeks(numScenarios)
+    print("INitial most rainy weeks start frm days: ", mostRainyWeeks)
     scenarios = []
     tIstants = []
+    # scenario = Scenario(population, weather, numScenarios)
     for ns in range(numScenarios):
-        scenario = Scenario(population, weatherData, numScenarios)
+        disasterType = random.randint(1, 2)
+        if disasterType == 1:
+            timeIstant = random.randint(0, T)
+        else:
+            index = random.sample(range(len(mostRainyWeeks)), 1)[0]
+            sample = mostRainyWeeks[index]
+            a = list(mostRainyWeeks[0:index])
+            b = list(mostRainyWeeks[index+1:-1])
+            mostRainyWeeks = np.concatenate((a, b))
+            print(int(sample))
+            timeIstant = int(sample)
+
+        
+        scenario = Scenario(population, weather, numScenarios, timeIstant, disasterType)
         s = scenario.sampleScenario()
         scenarios.append(s)
         tIstants.append(s.timeIstant)
-    
-
     X = range(0, T)
     df = pd.DataFrame(columns=['day', 'population', 'rainAmount', 't_min', 't_max', 'radiation', 'flood', 'earthqwake', 'probability', 'normalized'])
     
@@ -64,9 +79,9 @@ def runSym():
     axs1[2][0].plot([x for x in range(len(tIstants))], Utils.normalizeProbs([s.probability for s in scenarios]))
     axs1[2][0]
 
-    plt.show()
+    # plt.show()
     return df
 
 
 if __name__ == "__main__":
-    runSym()
+    print(runSym())

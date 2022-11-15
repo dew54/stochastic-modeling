@@ -206,29 +206,29 @@ class Weather:
         Prb = Utils.cebychevDis(tmin, Mean, Std)
         return prb, Prb
     
-    def setMostRainyWeeks(self, rainyDays, ns):
+    def setMostRainyWeeks(self, ns):
         mostRainy = []
-        timeIstant = []
         for t in range(self.T):
-            mostRainy.append(sum(rainyDays[t:t+7]))
+            mostRainy.append(sum(self.rainyDays[t:t+7]))
         mr = pd.Series(mostRainy)
         i = mr.nlargest(ns)
-        # mostRainy.sort(reverse = True)
 
         # print(i)
-        self.rainyWeeks =  (i.index.array)
+        self.rainyWeeks =  i.index.array
+        return i.index.array
 
 
     def sampleFromRainyWeeks(self):
         rainyWeeks = np.array(self.rainyWeeks)
         index = random.sample(range(len(rainyWeeks)), 1)[0]
         sample = rainyWeeks[index]
-        a = [1]#list(rainyWeeks[0:index-1])
-        b = [2]#list(rainyWeeks[index+1:-1])
+        a = list(rainyWeeks[0:index-1])
+        b = list(rainyWeeks[index:-1])
         self.rainyWeeks = np.concatenate((a, b))
         # self.rainyWeeks.delete(index)
         # self.rainyWeeks  = a.concatenate(b)
-        return sample
+        print("this round rainyweeks are: ", self.rainyWeeks)
+        return math.ceil(sample)
 
     
 
