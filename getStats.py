@@ -1,11 +1,13 @@
 import pandas as pd
 from sympy import symbols, Eq, solve
 import numpy as np
+import population
+#import weather
 # import json
 def getStats():
 
 
-    df = pd.read_csv('tarvisio-2021.csv')
+    df = pd.read_csv('dati-cividale.csv')
     # daily_df = pd.read_csv('orari-Tarvisio-2021.csv')
     df_wet = (df[df['rain'] > 0] ) 
     df_dry = (df[df['rain'] == 0] ) 
@@ -60,8 +62,8 @@ def getStats():
 
         "C_r0"          : -2000,
         "C_r1"          : -900,
-        "C_tmin0"       : -5,
-        "C_tmax0"       : -6,
+        "C_tmin0"       : -4,
+        "C_tmax0"       : -4,
         "C_tmin1"       : -3,
         "C_tmax1"       : -4,
 
@@ -74,3 +76,25 @@ def getStats():
     #     convert_file.write(json.dumps(desc))
     
     return desc, df
+
+
+def runSimulation(period):
+    weather = Weather(period)
+    simulation = []
+    dailyRain, t_min, t_max, radiaz = weather.weatherGame()
+    dailyStats = []
+    
+    stats = []
+    for d in range(360):
+        for t in range(period):        
+            oneDayRain.append(dailyRain[d + 360*t])
+            oneDayt_min.append(t_min[d + 360*t])
+            oneDayt_max.append(t_max[d + 360*t])
+            oneDayradiaz.append(radiaz[d + 360*t])
+        rainDesc = np.mean(oneDayRain), np.var(oneDayRain)
+        t_minDesc = np.mean(oneDayt_min), np.var(oneDayt_min)
+        t_maxDesc = np.mean(oneDayt_max), np.var(oneDayt_max)
+        radiationDesc =  np.mean(oneDayradiaz), np.var(oneDayradiaz)
+        dailyStats.append(rainDesc, t_minDesc, t_maxDesc, radiationDesc)
+
+    return dailyStats

@@ -34,7 +34,7 @@ class Utils:
         return normalized
 
     
-    def cebychevDis(sample, mean, std):
+    def cantelliDis(sample, mean, std):
         lmbda = abs(sample - mean)
 
         return  (std**2)/(std**2 + lmbda)       # disuguaglianza di Cantelli

@@ -23,10 +23,12 @@ class Scenario:
         self.rainAmount = []
         self.population = []
         self.earthqwake = []
-
         
 
+
     def sampleScenario(self):
+        Ia, S, Qmax = 10, 5, 200
+
         self.tempMin = self.t_min[self.timeIstant]
         self.tempMax = self.t_max[self.timeIstant]
         self.radiation = self.radiaz[self.timeIstant]
@@ -40,7 +42,7 @@ class Scenario:
 
         elif self.disasterType == 2:
             period = math.ceil(self.timeIstant/365)
-            self.flood = Flood(period)   # number of years
+            self.flood = Flood(period, Ia, S, Qmax)   # number of years
             
             self.flooding = self.flood.getProb()
             self.earthqwake = (0, 0)
@@ -50,40 +52,12 @@ class Scenario:
         self.population, popProb = self.pop.samplePopulation(self.timeIstant)  
 
         rainProb = self.weather.getRainProbability(self.timeIstant, self.rainAmount)
-        tminProb, tmaxProb = self.weather.getTProbability(self.timeIstant, self.tempMin)
-        self.probability = rainProb * popProb * disProb * tminProb * tmaxProb
+        tminProb, tmaxProb = self.weather.getTProbability(self.timeIstant, self.tempMin, self.tempMax)
+        self.probability = rainProb * popProb * disProb * tminProb * tmaxProb 
         # print("Probabilities: ", rainProb, popProb, disProb, tminProb, tmaxProb)
         
 
         return self
 
 
-
-    # def getRow(self):
-    #     row = [self.timeIstant, self.population, self.rainAmount, self.]
-
-
-
-    def populate(self, numScenarios, evaAreas, evaDemand):
-        self.night = int(1/(random.randint(1,5)))
-        self.windLevel = random.randint(0, 4)
-        self.rainLevel = random.randint(0, 4)
-        self.lightLevel = random.randint(0, 4)
-        self.severity = math.ceil((self.windLevel + self.rainLevel + self.lightLevel)/3) 
-        distribution = {
-            0 : 0.25,
-            1 : 0.35,
-            2 : 0.25,
-            3 : 0.1,
-            4 : 0.05
-        }
-
-        self.speedCoeff = 1/(1+Utils.computeCoefficient(self, "drive"))**self.severity
-        
-        self.loadingCoeff = 1 + (1- 1/(1+Utils.computeCoefficient(self, "loadingOps"))**self.severity)
-          
-        self.probability = distribution[self.severity]
-        self.evaAreas = evaAreas
-        
-        for area in evaAreas:
-            area.evaDemand = random.randint(evaDemand[0], evaDemand[1])
+  

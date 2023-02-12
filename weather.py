@@ -69,15 +69,6 @@ class Weather:
         self.mu = []
 
 
-        EQ_prob_vec = []
-
-        eq_cdf = []
-        EQ_samples = []
-        EQ_p = 0.01
-        EQ_mu = 3
-
-
-
         for i in range(T):
 
             self.wave_tmin0.append(E_tmin0 + C_tmin0 * (np.cos(0.0172*(i - T - 30))))
@@ -202,13 +193,13 @@ class Weather:
                 
     def getRainProbability(self, t, rainAmount):
         mean, std, a, b, c, d = self.extractDescriptors(t)
-        prb = Utils.cebychevDis(rainAmount, mean, std)
+        prb = Utils.cantelliDis(rainAmount, mean, std)
         return prb
     
-    def getTProbability(self, t, tmin):
+    def getTProbability(self, t, tmin, tmax):
         a, b, mean, std, Mean, Std = self.extractDescriptors(t)
-        prb = Utils.cebychevDis(tmin, mean, std)
-        Prb = Utils.cebychevDis(tmin, Mean, Std)
+        prb = Utils.cantelliDis(tmin, mean, std)
+        Prb = Utils.cantelliDis(tmax, Mean, Std)
         return prb, Prb
     
     def setMostRainyWeeks(self, ns):
